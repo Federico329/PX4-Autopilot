@@ -111,6 +111,16 @@ CONFIG:
       buildType: MinSizeRel
       settings:
         CONFIG: px4_fmu-v6xrt_bootloader
+    px4_Horacio-v2_default:
+      short: px4_Horacio-v2
+      buildType: MinSizeRel
+      settings:
+        CONFIG: px4_Horacio-v2_default
+    px4_Horacio-v2_bootloader:
+      short: px4_Horacio-v2_bootloader
+      buildType: MinSizeRel
+      settings:
+        CONFIG: px4_Horacio-v2_bootloader
     3dr_ctrl-zero-h7-oem-revg_default:
       short: 3dr_ctrl-zero-h7-oem-revg
       buildType: MinSizeRel
