@@ -36,7 +36,7 @@
 #include <nuttx/spi/spi.h>
 
 constexpr px4_spi_bus_all_hw_t px4_spi_buses_all_hw[BOARD_NUM_SPI_CFG_HW_VERSIONS] = {
-	initSPIFmumID(V2_0, {
+	initSPIFmumID(V6X_0, {
 		initSPIBus(SPI::Bus::SPI1, {
 			initSPIDevice(DRV_IMU_DEVTYPE_ICM20649, SPI::CS{GPIO::PortI, GPIO::Pin9}, SPI::DRDY{GPIO::PortF, GPIO::Pin2}),
 		}, {GPIO::PortI, GPIO::Pin11}),
@@ -60,7 +60,7 @@ constexpr px4_spi_bus_all_hw_t px4_spi_buses_all_hw[BOARD_NUM_SPI_CFG_HW_VERSION
 		}),
 	}),
 
-	initSPIFmumID(V2_1, {
+	initSPIFmumID(V6X_1, {
 		initSPIBus(SPI::Bus::SPI1, {
 			initSPIDevice(DRV_IMU_DEVTYPE_ICM20649, SPI::CS{GPIO::PortI, GPIO::Pin9}, SPI::DRDY{GPIO::PortF, GPIO::Pin2}),
 		}, {GPIO::PortI, GPIO::Pin11}),
@@ -84,7 +84,7 @@ constexpr px4_spi_bus_all_hw_t px4_spi_buses_all_hw[BOARD_NUM_SPI_CFG_HW_VERSION
 		}),
 	}),
 
-	initSPIFmumID(V2_3, {
+	initSPIFmumID(V6X_3, {
 		initSPIBus(SPI::Bus::SPI1, {
 			initSPIDevice(DRV_IMU_DEVTYPE_ICM42670P, SPI::CS{GPIO::PortI, GPIO::Pin9}, SPI::DRDY{GPIO::PortF, GPIO::Pin2}),
 		}, {GPIO::PortI, GPIO::Pin11}),
@@ -108,7 +108,7 @@ constexpr px4_spi_bus_all_hw_t px4_spi_buses_all_hw[BOARD_NUM_SPI_CFG_HW_VERSION
 		}),
 	}),
 
-	initSPIFmumID(V2_4, {
+	initSPIFmumID(V6X_4, {
 		initSPIBus(SPI::Bus::SPI1, {
 			initSPIDevice(DRV_IMU_DEVTYPE_ICM42670P, SPI::CS{GPIO::PortI, GPIO::Pin9}, SPI::DRDY{GPIO::PortF, GPIO::Pin2}),
 		}, {GPIO::PortI, GPIO::Pin11}),
@@ -131,7 +131,7 @@ constexpr px4_spi_bus_all_hw_t px4_spi_buses_all_hw[BOARD_NUM_SPI_CFG_HW_VERSION
 		}),
 	}),
 
-	initSPIFmumID(V2_6, {
+	initSPIFmumID(V6X_6, {
 		initSPIBus(SPI::Bus::SPI1, {
 			initSPIDevice(DRV_IMU_DEVTYPE_ICM45686, SPI::CS{GPIO::PortI, GPIO::Pin9}, SPI::DRDY{GPIO::PortF, GPIO::Pin2}),
 		}, {GPIO::PortI, GPIO::Pin11}),
@@ -154,7 +154,7 @@ constexpr px4_spi_bus_all_hw_t px4_spi_buses_all_hw[BOARD_NUM_SPI_CFG_HW_VERSION
 		}),
 	}),
 
-	initSPIFmumID(V2_8, {
+	initSPIFmumID(V6X_8, {
 		initSPIBus(SPI::Bus::SPI1, {
 			initSPIDevice(DRV_IMU_DEVTYPE_ICM45686, SPI::CS{GPIO::PortI, GPIO::Pin9}, SPI::DRDY{GPIO::PortF, GPIO::Pin2}),
 		}, {GPIO::PortI, GPIO::Pin11}),
@@ -178,7 +178,7 @@ constexpr px4_spi_bus_all_hw_t px4_spi_buses_all_hw[BOARD_NUM_SPI_CFG_HW_VERSION
 	}),
 
 
-	initSPIFmumID(V2_16, {
+	initSPIFmumID(V6X_16, {
 		initSPIBus(SPI::Bus::SPI1, {
 			initSPIDevice(DRV_IMU_DEVTYPE_ICM20602, SPI::CS{GPIO::PortI, GPIO::Pin9}, SPI::DRDY{GPIO::PortF, GPIO::Pin2}),
 		}, {GPIO::PortI, GPIO::Pin11}),
