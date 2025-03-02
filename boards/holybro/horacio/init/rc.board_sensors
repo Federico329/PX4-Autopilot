@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# PX4 FMUV2 specific board sensors init
+# PX4 FMUv6X specific board sensors init
 #------------------------------------------------------------------------------
 set HAVE_PM2 yes
 set INA_CONFIGURED no
@@ -72,9 +72,9 @@ else
 fi
 
 # Keep nesting shallow
-if ver hwtypecmp V2006 V2008
+if ver hwtypecmp V6X006 V6X008
 then
-	if ver hwtypecmp V2006
+	if ver hwtypecmp V6X006
 	then
 		# Internal SPI bus ICM45686
 		adis16470 -s -R 0 start
@@ -87,7 +87,7 @@ then
 		icm45686 -b 1 -s -R 10 start
 	fi
 else
-	if ver hwtypecmp V2004
+	if ver hwtypecmp V6X004
 	then
 		# Internal SPI bus ICM20649
 		icm20649 -s -R 6 start
@@ -98,7 +98,7 @@ else
 			bmi088 -A -R 6 -s start
 			bmi088 -G -R 6 -s start
 		else
-			if ver hwtypecmp V2010
+			if ver hwtypecmp V6X010
 			then
 				bmi088 -A -R 0 -s start
 				bmi088 -G -R 0 -s start
@@ -114,7 +114,7 @@ else
 	then
 		icm42688p -R 12 -s start
 	else
-		if ver hwtypecmp V2010
+		if ver hwtypecmp V6X010
 		then
 			icm42688p -R 14 -s start
 		else
@@ -122,7 +122,7 @@ else
 		fi
 	fi
 
-	if ver hwtypecmp V2003 V2004
+	if ver hwtypecmp V6X003 V6X004
 	then
 		# Internal SPI bus ICM-42670-P (hard-mounted)
 		icm42670p -R 10 -s start
@@ -138,7 +138,7 @@ else
 fi
 
 # Internal magnetometer on I2c
-if ver hwtypecmp V2001
+if ver hwtypecmp V6X001
 then
 	rm3100 -I -b 4 start
 else
@@ -152,7 +152,7 @@ ist8310 -X -b 1 -R 10 start
 # Possible internal Baro
 if param compare SENS_INT_BARO_EN 1
 then
-	if ver hwtypecmp V2001 V2006 V2008
+	if ver hwtypecmp V6X001 V6X006 V6X008
 	then
 		icp201xx -I -a 0x64 start
 	else
@@ -161,7 +161,7 @@ then
 fi
 
 #external baro
-if ver hwtypecmp V2001
+if ver hwtypecmp V6X001
 then
 	icp201xx -X start
 else

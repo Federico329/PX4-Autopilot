@@ -32,8 +32,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  ************************************************************************************/
-#ifndef __NUTTX_CONFIG_PX4_HORACIO_V2_INCLUDE_BOARD_H
-#define __NUTTX_CONFIG_PX4_HORACIO_V2_INCLUDE_BOARD_H
+#ifndef __NUTTX_CONFIG_PX4_FMU_V6X_INCLUDE_BOARD_H
+#define __NUTTX_CONFIG_PX4_FMU_V6X_INCLUDE_BOARD_H
 
 /************************************************************************************
  * Included Files
@@ -563,4 +563,4 @@
 # define PROBE_MARK(n)
 #endif
 
-#endif  /*__NUTTX_CONFIG_PX4_HORACIO_V2_INCLUDE_BOARD_H  */
+#endif  /*__NUTTX_CONFIG_PX4_FMU_V6X_INCLUDE_BOARD_H  */
