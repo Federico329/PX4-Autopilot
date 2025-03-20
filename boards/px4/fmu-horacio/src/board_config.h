@@ -60,12 +60,12 @@
 
 #define BOARD_USES_PX4IO_VERSION       2
 #define PX4IO_SERIAL_DEVICE            "/dev/ttyS5"
-#define PX4IO_SERIAL_TX_GPIO           GPIO_USART6_TX
-#define PX4IO_SERIAL_RX_GPIO           GPIO_USART6_RX
-#define PX4IO_SERIAL_BASE              STM32_USART6_BASE
+#define PX4IO_SERIAL_TX_GPIO           GPIO_UART4_TX
+#define PX4IO_SERIAL_RX_GPIO           GPIO_UART4_RX
+#define PX4IO_SERIAL_BASE              STM32_UART4_BASE
 #define PX4IO_SERIAL_VECTOR            STM32_IRQ_USART6
-#define PX4IO_SERIAL_TX_DMAMAP         DMAMAP_USART6_TX
-#define PX4IO_SERIAL_RX_DMAMAP         DMAMAP_USART6_RX
+#define PX4IO_SERIAL_TX_DMAMAP         DMAMAP_UART4_TX
+#define PX4IO_SERIAL_RX_DMAMAP         DMAMAP_UART4_RX
 #define PX4IO_SERIAL_RCC_REG           STM32_RCC_APB2ENR
 #define PX4IO_SERIAL_RCC_EN            RCC_APB2ENR_USART6EN
 #define PX4IO_SERIAL_CLOCK             STM32_PCLK2_FREQUENCY
@@ -75,7 +75,7 @@
 
 #define BOARD_HAS_LTC44XX_VALIDS      2 //  N Bricks
 #define BOARD_HAS_USB_VALID           1 // LTC Has USB valid
-#define BOARD_HAS_NBAT_V              2d // 2 Digital Voltage
+#define BOARD_HAS_NBAT_V              2d // 2 Voltage
 #define BOARD_HAS_NBAT_I              2d // 2 Digital Current
 
 /* PX4FMU GPIOs ***********************************************************************************/
@@ -178,6 +178,10 @@
 	/* PH3  */  GPIO_ADC3_INP14,   \
 	/* PH4  */  GPIO_ADC3_INP15
 
+/* Define the reset GPIO for the HS interface */
+#define GPIO_HS_RESET (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_2MHz|GPIO_OUTPUT_CLEAR|GPIO_PORTF|GPIO_PIN10) /* PF10 */
+
+
 /* Define Channel numbers must match above GPIO pin IN(n)*/
 #define ADC_SCALED_VDD_3V3_SENSORS1_CHANNEL     /* PA0  */  ADC1_CH(16)
 #define ADC_SCALED_VDD_3V3_SENSORS2_CHANNEL     /* PA4  */  ADC1_CH(18)
@@ -247,7 +251,7 @@
 
 /* PWM
  */
-#define DIRECT_PWM_OUTPUT_CHANNELS   9
+#define DIRECT_PWM_OUTPUT_CHANNELS   5
 
 
 /* Power supply control and monitoring GPIOs */
@@ -320,8 +324,8 @@
 #define HRT_TIMER               8  /* use timer8 for the HRT */
 #define HRT_TIMER_CHANNEL       3  /* use capture/compare channel 3 */
 
-#define HRT_PPM_CHANNEL         /* T8C1 */  1  /* use capture/compare channel 1 */
-#define GPIO_PPM_IN             /* PI5 T8C1 */ GPIO_TIM8_CH1IN_2
+// #define HRT_PPM_CHANNEL         /* T8C1 */  1  /* use capture/compare channel 1 */
+// #define GPIO_PPM_IN             /* PI5 T8C1 */ GPIO_TIM8_CH1IN_2
 
 /* RC Serial port */
 #define RC_SERIAL_PORT                     "/dev/ttyS5"
@@ -358,7 +362,7 @@
 
 /* Power switch controls ******************************************************/
 
-#define SPEKTRUM_POWER(_on_true)           VDD_3V3_SPEKTRUM_POWER_EN(_on_true)
+//#define SPEKTRUM_POWER(_on_true)           VDD_3V3_SPEKTRUM_POWER_EN(_on_true)
 
 /*
  * FMUv6X has a separate RC_IN
@@ -368,10 +372,10 @@
  *   Inversion is possible in the UART and can drive  GPIO PPM_IN as an output
  */
 
-#define GPIO_PPM_IN_AS_OUT             (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_2MHz|GPIO_OUTPUT_SET|GPIO_PORTI|GPIO_PIN5)
-#define SPEKTRUM_RX_AS_GPIO_OUTPUT()   px4_arch_configgpio(GPIO_PPM_IN_AS_OUT)
-#define SPEKTRUM_RX_AS_UART()          /* Can be left as uart */
-#define SPEKTRUM_OUT(_one_true)        px4_arch_gpiowrite(GPIO_PPM_IN_AS_OUT, (_one_true))
+// #define GPIO_PPM_IN_AS_OUT             (GPIO_OUTPUT|GPIO_PUSHPULL|GPIO_SPEED_2MHz|GPIO_OUTPUT_SET|GPIO_PORTI|GPIO_PIN5)
+// #define SPEKTRUM_RX_AS_GPIO_OUTPUT()   px4_arch_configgpio(GPIO_PPM_IN_AS_OUT)
+// #define SPEKTRUM_RX_AS_UART()          /* Can be left as uart */
+// #define SPEKTRUM_OUT(_one_true)        px4_arch_gpiowrite(GPIO_PPM_IN_AS_OUT, (_one_true))
 
 #define SDIO_SLOTNO                    0  /* Only one slot */
 #define SDIO_MINOR                     0
@@ -447,10 +451,6 @@
 		GPIO_TRACE,                       \
 		PX4_ADC_GPIO,                     \
 		GPIO_HW_VER_REV_DRIVE,            \
-		GPIO_CAN1_TX,                     \
-		GPIO_CAN1_RX,                     \
-		GPIO_CAN2_TX,                     \
-		GPIO_CAN2_RX,                     \
 		GPIO_HEATER_OUTPUT,               \
 		GPIO_nPOWER_IN_A,                 \
 		GPIO_nPOWER_IN_B,                 \

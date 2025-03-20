@@ -56,6 +56,7 @@
  * TIM8_CH1_IN T FMU_PPM_INPUT       - Sampled byt HRT by other driver
  */
 
+
 constexpr io_timers_t io_timers[MAX_IO_TIMERS] = {
 	initIOTimer(Timer::Timer5, DMA{DMA::Index1}),
 	initIOTimer(Timer::Timer4, DMA{DMA::Index1}),
