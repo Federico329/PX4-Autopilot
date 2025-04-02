@@ -217,6 +217,8 @@
 #define STM32_APB2_TIM16_CLKIN  (2*STM32_PCLK2_FREQUENCY)	// 13MHz needed for Transciever
 #define STM32_APB2_TIM17_CLKIN  (2*STM32_PCLK2_FREQUENCY)
 
+#define GPIO_TIM16_CH1OUT GPIO_TIM16_CH1OUT_2
+
 /* Kernel Clock Configuration
  *
  * Note: look at Table 54 in ST Manual
@@ -463,7 +465,5 @@
 #define GPIO_TIM1_CH2OUT GPIO_TIM1_CH2OUT_1   /* PA9  */
 #define GPIO_TIM1_CH3OUT GPIO_TIM1_CH3OUT_1   /* PA10 */
 #define GPIO_TIM1_CH4OUT GPIO_TIM1_CH4OUT_1   /* PA11 */
-
-#define GPIO_TIM16_CH1OUT GPIO_TIM16_CH1OUT_2 /* PF6  */
 
 #endif  /*__NUTTX_CONFIG_PX4_FMU_V6X_INCLUDE_BOARD_H  */

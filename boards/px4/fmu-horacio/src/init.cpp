@@ -46,6 +46,7 @@
  ****************************************************************************/
 
 #include "board_config.h"
+#include "../nuttx-config/include/board.h"
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -76,6 +77,10 @@
 #include <px4_platform/board_dma_alloc.h>
 #include <px4_platform/gpio/mcp23009.hpp>
 
+#include <nuttx/timers/pwm.h>
+#include "stm32_pwm.h"
+
+
 /****************************************************************************
  * Pre-Processor Definitions
  ****************************************************************************/
@@ -104,6 +109,56 @@ __END_DECLS
  ************************************************************************************/
 __EXPORT void board_peripheral_reset(int ms)
 {
+}
+
+/************************************************************************************
+ * Name: stm32_pwm_setup
+ *
+ * Description: Setup the PWM for the transciever
+ *
+ ************************************************************************************/
+int stm32_pwm_setup(void)
+{
+#ifdef CONFIG_PWM
+
+#if defined(CONFIG_STM32H7_TIM16_PWM)
+	static bool initialized = false;
+	struct pwm_lowerhalf_s *pwm;
+	struct pwm_info_s info;
+
+	if (!initialized)
+	{
+		/* Call stm32_pwminitialize() to get an instance of the PWM interface */
+
+		pwm = stm32_pwminitialize(16);
+		if (!pwm)
+			{
+			_err("ERROR: Failed to get the STM32 PWM lower half\n");
+			return -ENODEV;
+			}
+
+		/* Define frequency and duty cycle: 13MHz @ 50% */
+
+		info.frequency = 13000000; /* 13MHz */
+		info.duty = 32768;        /* This value means 50% */
+
+		/* Initialize PWM */
+
+		pwm->ops->setup(pwm);
+		pwm->ops->start(pwm, &info);
+
+		/* Now we are initialized */
+
+		initialized = true;
+	}
+
+	return 0;
+#endif
+
+	return OK;
+#else
+  	return -ENODEV;
+#endif
 }
 
 /************************************************************************************
@@ -158,6 +213,9 @@ stm32_boardinitialize(void)
 	px4_gpio_init(gpio, arraySize(gpio));
 
 	/* configure USB interfaces */
+
+	if(stm32_pwm_setup() != 0)
+		printf("PWM setup failed\n");
 
 	stm32_usbinitialize();
 }
