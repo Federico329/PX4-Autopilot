@@ -89,6 +89,25 @@ __EXPORT void stm32_usbinitialize(void)
 }
 
 /************************************************************************************
+ * Name: stm32_usbulpireset
+ *
+ * Description:
+ *  Reset external ULPI.
+ *
+ ************************************************************************************/
+
+ void stm32_usbulpireset(struct usbdev_s *dev)
+ {
+	 stm32_configgpio(GPIO_HS_RESET);
+	 up_mdelay(5);
+	 stm32_gpiowrite(GPIO_HS_RESET, true);
+	 up_mdelay(10);
+	 stm32_gpiowrite(GPIO_HS_RESET, false);
+	 up_mdelay(10);
+	 stm32_gpiowrite(GPIO_HS_RESET, true);
+ }
+
+/************************************************************************************
  * Name:  stm32_usbsuspend
  *
  * Description:

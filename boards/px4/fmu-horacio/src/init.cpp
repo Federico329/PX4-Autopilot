@@ -46,6 +46,7 @@
  ****************************************************************************/
 
 #include "board_config.h"
+#include "../nuttx-config/include/board.h"
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -76,6 +77,10 @@
 #include <px4_platform/board_dma_alloc.h>
 #include <px4_platform/gpio/mcp23009.hpp>
 
+#include <nuttx/timers/pwm.h>
+#include "stm32_pwm.h"
+
+
 /****************************************************************************
  * Pre-Processor Definitions
  ****************************************************************************/
@@ -104,28 +109,6 @@ __END_DECLS
  ************************************************************************************/
 __EXPORT void board_peripheral_reset(int ms)
 {
-	/* set the peripheral rails off */
-
-	VDD_5V_PERIPH_EN(false);
-	board_control_spi_sensors_power(false, 0xffff);
-	VDD_3V3_SENSORS4_EN(false);
-
-	bool last = READ_VDD_3V3_SPEKTRUM_POWER_EN();
-	/* Keep Spektum on to discharge rail*/
-	VDD_3V3_SPEKTRUM_POWER_EN(false);
-
-	/* wait for the peripheral rail to reach GND */
-	usleep(ms * 1000);
-	syslog(LOG_DEBUG, "reset done, %d ms\n", ms);
-
-	/* re-enable power */
-
-	/* switch the peripheral rail back on */
-	VDD_3V3_SPEKTRUM_POWER_EN(last);
-	board_control_spi_sensors_power(true, 0xffff);
-	VDD_3V3_SENSORS4_EN(true);
-	VDD_5V_PERIPH_EN(true);
-
 }
 
 /************************************************************************************
@@ -170,21 +153,36 @@ stm32_boardinitialize(void)
 {
 	board_on_reset(-1); /* Reset PWM first thing */
 
-	/* configure LEDs */
-
-	board_autoled_initialize();
-
 	/* configure pins */
 
 	const uint32_t gpio[] = PX4_GPIO_INIT_LIST;
 	px4_gpio_init(gpio, arraySize(gpio));
 
+	/* Configure timers */
+
+	px4_arch_configgpio(GPIO_TIM16_CH1OUT);
+
+	// The number is based on the timer/channel array in timer_config.cpp
+	unsigned timer = 1;
+	unsigned channel = 4;
+
+	// Initialize the channel for PWM output with no handler (NULL)
+	ret = io_timer_channel_init(channel, IOTimerChanMode_PWMOut, NULL, NULL);
+	if (ret < 0)
+		printf("Failed to initialize PWM channel\n");
+
+	// // Set the PWM rate (frequency)
+	// unsigned pwm_rate = 53000; // 13 MHz
+	// ret = io_timer_set_pwm_rate(timer, pwm_rate);
+	// if (ret < 0)
+	// 	printf("Failed to set PWM rate\n");
+
+	// Enable the PWM output
+	io_timer_set_enable(true, IOTimerChanMode_PWMOut, 1 << channel);
+
 	/* configure USB interfaces */
 
 	stm32_usbinitialize();
-
-	VDD_3V3_ETH_POWER_EN(true);
-
 }
 
 /****************************************************************************
@@ -215,13 +213,6 @@ stm32_boardinitialize(void)
 __EXPORT int board_app_initialize(uintptr_t arg)
 {
 #if !defined(BOOTLOADER)
-
-	/* Power on Interfaces */
-	VDD_3V3_SD_CARD_EN(true);
-	VDD_5V_PERIPH_EN(true);
-	VDD_5V_HIPOWER_EN(true);
-	VDD_3V3_SENSORS4_EN(true);
-	VDD_3V3_SPEKTRUM_POWER_EN(true);
 
 	/* Need hrt running before using the ADC */
 
@@ -261,20 +252,9 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	hrt_call_every(&serial_dma_call, 1000, 1000, (hrt_callout)stm32_serial_dma_poll, NULL);
 #  endif
 
-	/* initial LED state */
-	drv_led_start();
-	led_off(LED_RED);
-	led_on(LED_GREEN); // Indicate Power.
-	led_off(LED_BLUE);
-
 	if (board_hardfault_init(2, true) != 0) {
-		led_on(LED_RED);
+		//led_on(LED_RED);
 	}
-
-	// Ensure Power is off for > 10 mS
-	usleep(15 * 1000);
-	VDD_3V3_SD_CARD_EN(true);
-	usleep(500 * 1000);
 
 #  ifdef CONFIG_MMCSD
 	int ret = stm32_sdio_initialize();
@@ -285,13 +265,6 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	}
 
 #  endif /* CONFIG_MMCSD */
-
-	ret = mcp23009_register_gpios(3, 0x25);
-
-	if (ret != OK) {
-		led_on(LED_RED);
-		return ret;
-	}
 
 #endif /* !defined(BOOTLOADER) */
 
