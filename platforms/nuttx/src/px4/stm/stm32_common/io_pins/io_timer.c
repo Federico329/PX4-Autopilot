@@ -87,7 +87,7 @@ static int io_timer_handler7(int irq, void *context, void *arg);
  * taken into account
  */
 #if !defined(BOARD_PWM_FREQ)
-#define BOARD_PWM_FREQ 1000000
+#define BOARD_PWM_FREQ 10000
 #endif
 
 #if !defined(BOARD_ONESHOT_FREQ)
@@ -576,7 +576,8 @@ int io_timer_set_dshot_mode(uint8_t timer, unsigned dshot_pwm_freq, uint8_t dma_
 
 static inline void io_timer_set_PWM_mode(unsigned timer)
 {
-	rPSC(timer) = (io_timers[timer].clock_freq / BOARD_PWM_FREQ) - 1;
+	//rPSC(timer) = (io_timers[timer].clock_freq / BOARD_PWM_FREQ) - 1;
+	rPSC(timer) = 0;
 }
 
 void io_timer_trigger(unsigned channels_mask)
@@ -660,10 +661,10 @@ int io_timer_init_timer(unsigned timer, io_timer_channel_mode_t mode)
 
 		/*
 		 * Note we do the Standard PWM Out init here
-		 * default to updating at 50Hz
+		 * default to updating at 13MHz
 		 */
 
-		timer_set_rate(timer, 50);
+		timer_set_rate(timer, 53000);
 
 		/*
 		 * Note that the timer is left disabled with IRQ subs installed
@@ -739,6 +740,7 @@ int io_timer_set_pwm_rate(unsigned timer, unsigned rate)
 
 		if (changed_channels) {
 			io_timer_set_PWM_mode(timer);
+			rCCR1(timer) = rARR(timer) / 2; // 50% duty cycle
 		}
 
 		timer_set_rate(timer, rate);

@@ -112,56 +112,6 @@ __EXPORT void board_peripheral_reset(int ms)
 }
 
 /************************************************************************************
- * Name: stm32_pwm_setup
- *
- * Description: Setup the PWM for the transciever
- *
- ************************************************************************************/
-int stm32_pwm_setup(void)
-{
-#ifdef CONFIG_PWM
-
-#if defined(CONFIG_STM32H7_TIM16_PWM)
-	static bool initialized = false;
-	struct pwm_lowerhalf_s *pwm;
-	struct pwm_info_s info;
-
-	if (!initialized)
-	{
-		/* Call stm32_pwminitialize() to get an instance of the PWM interface */
-
-		pwm = stm32_pwminitialize(16);
-		if (!pwm)
-			{
-			_err("ERROR: Failed to get the STM32 PWM lower half\n");
-			return -ENODEV;
-			}
-
-		/* Define frequency and duty cycle: 13MHz @ 50% */
-
-		info.frequency = 13000000; /* 13MHz */
-		info.duty = 32768;        /* This value means 50% */
-
-		/* Initialize PWM */
-
-		pwm->ops->setup(pwm);
-		pwm->ops->start(pwm, &info);
-
-		/* Now we are initialized */
-
-		initialized = true;
-	}
-
-	return 0;
-#endif
-
-	return OK;
-#else
-  	return -ENODEV;
-#endif
-}
-
-/************************************************************************************
  * Name: board_on_reset
  *
  * Description:
@@ -203,19 +153,34 @@ stm32_boardinitialize(void)
 {
 	board_on_reset(-1); /* Reset PWM first thing */
 
-	/* configure LEDs */
-
-	// board_autoled_initialize();
-
 	/* configure pins */
 
 	const uint32_t gpio[] = PX4_GPIO_INIT_LIST;
 	px4_gpio_init(gpio, arraySize(gpio));
 
-	/* configure USB interfaces */
+	/* Configure timers */
 
-	if(stm32_pwm_setup() != 0)
-		printf("PWM setup failed\n");
+	px4_arch_configgpio(GPIO_TIM16_CH1OUT);
+
+	// The number is based on the timer/channel array in timer_config.cpp
+	unsigned timer = 1;
+	unsigned channel = 4;
+
+	// Initialize the channel for PWM output with no handler (NULL)
+	ret = io_timer_channel_init(channel, IOTimerChanMode_PWMOut, NULL, NULL);
+	if (ret < 0)
+		printf("Failed to initialize PWM channel\n");
+
+	// // Set the PWM rate (frequency)
+	// unsigned pwm_rate = 53000; // 13 MHz
+	// ret = io_timer_set_pwm_rate(timer, pwm_rate);
+	// if (ret < 0)
+	// 	printf("Failed to set PWM rate\n");
+
+	// Enable the PWM output
+	io_timer_set_enable(true, IOTimerChanMode_PWMOut, 1 << channel);
+
+	/* configure USB interfaces */
 
 	stm32_usbinitialize();
 }

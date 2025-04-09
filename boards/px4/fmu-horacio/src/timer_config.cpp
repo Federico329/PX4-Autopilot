@@ -40,10 +40,12 @@
  * TIM1_CH3  T FMU_CH3
  * TIM1_CH4  T FMU_CH4
  *
+ * TIM16_CH1 T USB_HS_CLK
  */
 
 constexpr io_timers_t io_timers[MAX_IO_TIMERS] = {
 	initIOTimer(Timer::Timer1),
+	initIOTimer(Timer::Timer16),
 };
 
 constexpr timer_io_channels_t timer_io_channels[MAX_TIMER_IO_CHANNELS] = {
@@ -51,6 +53,7 @@ constexpr timer_io_channels_t timer_io_channels[MAX_TIMER_IO_CHANNELS] = {
 	initIOTimerChannel(io_timers, {Timer::Timer1, Timer::Channel2}, {GPIO::PortA, GPIO::Pin9}),
 	initIOTimerChannel(io_timers, {Timer::Timer1, Timer::Channel3}, {GPIO::PortA, GPIO::Pin10}),
 	initIOTimerChannel(io_timers, {Timer::Timer1, Timer::Channel4}, {GPIO::PortA, GPIO::Pin11}),
+	initIOTimerChannel(io_timers, {Timer::Timer16, Timer::Channel1}, {GPIO::PortF, GPIO::Pin6}),
 };
 
 constexpr io_timers_channel_mapping_t io_timers_channel_mapping =
